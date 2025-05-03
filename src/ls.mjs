@@ -15,7 +15,8 @@ const ls = async (currentDir) => {
   const files = await readdir(currentDir, { withFileTypes: true });
   const columns = files.map((file) => ({
     Name: file.name,
-    Type: file.isDirectory() ? "directory" : "file",
+    Type: file.isDirectory() && !file.isSymbolicLink() ? "directory" : "file",
+    //TODO correct separation ders\files\links\etc
   }));
   console.table(
     columns.sort(
