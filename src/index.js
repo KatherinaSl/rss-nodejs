@@ -14,6 +14,9 @@ import {
   moveFile,
   deleteFile,
 } from "./basicFilesOp.mjs";
+import { osInfo } from "./osInfo.mjs";
+import getHash from "./hashCalc.mjs";
+import { compress, decompress } from "./zip.mjs";
 
 let currentDir = os.homedir();
 const processArgv = process.argv.slice(2);
@@ -70,6 +73,18 @@ reader.on("line", async (input) => {
       break;
     case "rm":
       await deleteFile(input, currentDir);
+      break;
+    case "os":
+      osInfo(input.split(" ")[1]);
+      break;
+    case "hash":
+      await getHash(input, currentDir);
+      break;
+    case "compress":
+      await compress(input, currentDir);
+      break;
+    case "decompress":
+      await decompress(input, currentDir);
       break;
     default:
       logErrorMsg("Invalid input", "important");
