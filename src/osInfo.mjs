@@ -1,8 +1,5 @@
 import os from "node:os";
-
-const getEndOfLine = () => {
-  console.log(os.EOL);
-};
+import { InvalidInputError } from "./utils/commandUtils.mjs";
 
 const getHostCPUs = () => {
   const cpu = os.cpus();
@@ -13,14 +10,14 @@ const getHostCPUs = () => {
   console.log(`Amount of CPUS: ${amountOfCPU}`);
 };
 
-// const getHomeDir = () => {
-//   console.log(`Home directory ${os.homedir()}`);
-// };
-
-const osInfo = (param) => {
-  switch (param) {
+const osInfo = (args) => {
+  if (args.length !== 1 || !args[0]) {
+    // throw new Error("Invalid input");
+    throw new InvalidInputError();
+  }
+  switch (args[0]) {
     case "--EOL":
-      getEndOfLine();
+      console.log(`Default system End-Of-Line ${JSON.stringify(os.EOL)}`);
       break;
     case "--cpus":
       getHostCPUs();
@@ -34,6 +31,8 @@ const osInfo = (param) => {
     case "--architecture":
       console.log(`CPU architecture ${os.arch()}`);
       break;
+    default:
+      throw new Error("Invalid input");
   }
 };
 

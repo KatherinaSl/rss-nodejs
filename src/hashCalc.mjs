@@ -3,8 +3,11 @@ import { pipeline } from "node:stream/promises";
 import { createReadStream } from "node:fs";
 import { createHash } from "node:crypto";
 
-const getHash = async (input, currentDir) => {
-  const pathToFile = input.slice(5).trim();
+const getHash = async (args, currentDir) => {
+  if (args.length !== 1 || !args[0]) {
+    throw new InvalidInputError();
+  }
+  const pathToFile = args[0];
   const newPathToFile = path.isAbsolute(pathToFile)
     ? pathToFile
     : path.resolve(currentDir, pathToFile);

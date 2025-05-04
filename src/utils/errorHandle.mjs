@@ -15,16 +15,14 @@ const colorMap = {
   error: colors.red,
 };
 
-// export default function logErrorMsg(msg, type = "info") {
-//   const message = `${colorMap[type]}${msg}${colors.reset}`;
-//   if (type === "error") {
-//     throw new Error(message);
-//   } else {
-//     console.log(message);
-//   }
-// }
+function logMsg(msg, type = "info") {
+  const message = `${colorMap[type]}${msg}${colors.reset}`;
+  console.log(message);
+}
 
-export default function logErrorMsg(msg) {
+function logErrorMsg(msg) {
   const message = `${colorMap.error}${msg}${colors.reset}`;
   console.log(message);
 }
+
+export { logErrorMsg, logMsg };
