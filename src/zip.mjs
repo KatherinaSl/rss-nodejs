@@ -22,9 +22,6 @@ const compress = async (args, currentDir) => {
 
   let fileStream = createReadStream(pathToFile);
   let archiveStream = createWriteStream(pathToArchive, { flags: "wx" });
-  console.log(`path to file ${pathToFile}`);
-
-  console.log(`path to archive ${pathToArchive}`);
   let compress = createBrotliCompress();
   await pipeline(fileStream, compress, archiveStream);
 };
@@ -46,11 +43,8 @@ const decompress = async (args, currentDir) => {
     ? targetFilepath
     : path.resolve(currentDir, targetFilepath);
 
-  console.log(`pathToFile ${pathToFile}`);
-
   let archiveStream = createReadStream(pathToArchive);
 
-  console.log(`pathToArchive ${pathToArchive}`);
   let fileStream = createWriteStream(pathToFile, { flags: "wx+" });
   let decompress = createBrotliDecompress();
 

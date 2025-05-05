@@ -3,6 +3,7 @@ function getCommandParams(input) {
     return { command: "none", args: [] };
   }
   const regex = /"[^"]+"|[^\s]+/g;
+  // const regex = /["'][^"']+["']|[^\s]+/g;
   const args = input
     .match(regex)
     .map((e) => e.replace(/"(.*)"/, "$1"))

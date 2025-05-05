@@ -4,7 +4,7 @@ import { stdin as input, stdout as output } from "node:process";
 import path from "node:path";
 import ls from "./ls.mjs";
 import cdCommand from "./cdCommand.mjs";
-import { logErrorMsg, logMsg } from "./utils/errorHandle.mjs";
+import { logErrorMsg, logMsg } from "./utils/messageHandler.mjs";
 import {
   cat,
   addFile,
@@ -18,31 +18,32 @@ import { osInfo } from "./osInfo.mjs";
 import getHash from "./hashCalc.mjs";
 import { compress, decompress } from "./zip.mjs";
 import { getCommandParams, InvalidInputError } from "./utils/commandUtils.mjs";
+import { getUserName } from "./utils/common.mjs";
 
+const username = getUserName();
 let currentDir = os.homedir();
-const processArgv = process.argv.slice(2);
-const username = processArgv[0].split("=")[1];
-console.log(
-  `Welcome to the File Manager, ${username ? username : os.userInfo().username}!`
-);
-console.log(`You are currently in ${currentDir + os.EOL}`);
-console.log(`Print command and wait for result ${os.EOL}`);
-const rootDir = path.parse(currentDir).root;
 const reader = readline.createInterface({ input, output });
 
+logMsg(
+  `Welcome to the File Manager, ${username ? username : os.userInfo().username}!`
+);
+
+logMsg(`You are currently in ${currentDir + os.EOL}`, "important");
+logMsg(`Print command and wait for result ${os.EOL}`, "normal");
+
 process.on("beforeExit", () => {
-  console.log(`Thank you for using File Manager, ${username}, goodbye!`);
+  logMsg(`Thank you for using File Manager, ${username}, goodbye!`);
 });
 
 reader.on("line", async (input) => {
   const params = getCommandParams(input);
-  // console.log(params);
   try {
     switch (params.command) {
       case ".exit":
         reader.close();
         break;
       case "up":
+        const rootDir = path.parse(currentDir).root;
         if (currentDir !== rootDir) currentDir = path.dirname(currentDir);
         break;
       case "ls":
@@ -87,7 +88,7 @@ reader.on("line", async (input) => {
       case "none":
         break;
       default:
-        logErrorMsg("Invalid input", "important");
+        logErrorMsg("Invalid input");
     }
   } catch (error) {
     if (error instanceof InvalidInputError) {
@@ -97,24 +98,9 @@ reader.on("line", async (input) => {
       logMsg("Operation failed", "error");
     }
   }
-  console.log(`You are currently in ${currentDir + os.EOL}`);
-  console.log(`Print command and wait for result ${os.EOL}`);
-});
 
-// const COMMANDS = [
-//   ".exit",
-//   "up",
-//   "cd",
-//   "ls",
-//   "cat",
-//   "add",
-//   "mkdir",
-//   "rn",
-//   "cp",
-//   "mv",
-//   "rm",
-//   "os",
-//   "hash",
-//   "compress",
-//   "decompress",
-// ];
+  if (input !== ".exit") {
+    logMsg(`You are currently in ${currentDir + os.EOL}`, "important");
+    logMsg(`Print command and wait for result ${os.EOL}`, "normal");
+  }
+});

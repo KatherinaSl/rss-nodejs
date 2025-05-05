@@ -2,6 +2,7 @@ import path from "node:path";
 import { pipeline } from "node:stream/promises";
 import { createReadStream } from "node:fs";
 import { createHash } from "node:crypto";
+import { logMsg } from "./utils/messageHandler.mjs";
 
 const getHash = async (args, currentDir) => {
   if (args.length !== 1 || !args[0]) {
@@ -17,7 +18,7 @@ const getHash = async (args, currentDir) => {
   await pipeline(readableStream, hash);
 
   const digest = hash.digest("hex");
-  console.log(`Hash ${digest}`);
+  logMsg(`Hash ${digest}`);
 };
 
 export default getHash;
