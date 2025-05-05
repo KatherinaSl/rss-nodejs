@@ -1,0 +1,13 @@
+{
+  "name": "file-manager",
+  "version": "1.0.0",
+  "license": "ISC",
+  "type": "module",
+  "main": "index.js",
+  "engines": {
+    "node": ">=22.14.0"
+  },
+  "scripts": {
+    "start": "node src/index.js"
+  }
+}
