@@ -2,23 +2,17 @@ import { createReadStream, createWriteStream } from "node:fs";
 import { createBrotliCompress, createBrotliDecompress } from "node:zlib";
 import path, { join } from "node:path";
 import { pipeline } from "node:stream/promises";
+import { validateTwoArgs, getCorrectPath } from "./utils/common.mjs";
 
 const compress = async (args, currentDir) => {
-  if (args.length !== 2 || !args[0] || !args[1]) {
-    throw new InvalidInputError();
-  }
+  validateTwoArgs(args);
   const sourceFilePath = args[0];
   const file = path.basename(sourceFilePath);
 
   const targetDirectory = join(args[1], `${file}.br`);
 
-  const pathToFile = path.isAbsolute(sourceFilePath)
-    ? sourceFilePath
-    : path.resolve(currentDir, sourceFilePath);
-
-  const pathToArchive = path.isAbsolute(targetDirectory)
-    ? targetDirectory
-    : path.resolve(currentDir, targetDirectory);
+  const pathToFile = getCorrectPath(currentDir, sourceFilePath);
+  const pathToArchive = getCorrectPath(currentDir, targetDirectory);
 
   let fileStream = createReadStream(pathToFile);
   let archiveStream = createWriteStream(pathToArchive, { flags: "wx" });
@@ -27,21 +21,14 @@ const compress = async (args, currentDir) => {
 };
 
 const decompress = async (args, currentDir) => {
-  if (args.length !== 2 || !args[0] || !args[1]) {
-    throw new InvalidInputError();
-  }
+  validateTwoArgs(args);
   const sourceFilePath = args[0];
   const file = path.basename(sourceFilePath);
 
   const targetFilepath = join(args[1], file.split(".br")[0]);
 
-  const pathToArchive = path.isAbsolute(sourceFilePath)
-    ? sourceFilePath
-    : path.resolve(currentDir, sourceFilePath);
-
-  const pathToFile = path.isAbsolute(targetFilepath)
-    ? targetFilepath
-    : path.resolve(currentDir, targetFilepath);
+  const pathToArchive = getCorrectPath(currentDir, sourceFilePath);
+  const pathToFile = getCorrectPath(currentDir, targetFilepath);
 
   let archiveStream = createReadStream(pathToArchive);
 

@@ -1,17 +1,13 @@
-import path from "node:path";
 import { pipeline } from "node:stream/promises";
 import { createReadStream } from "node:fs";
 import { createHash } from "node:crypto";
 import { logMsg } from "./utils/messageHandler.mjs";
+import { validateOneArg, getCorrectPath } from "./utils/common.mjs";
 
 const getHash = async (args, currentDir) => {
-  if (args.length !== 1 || !args[0]) {
-    throw new InvalidInputError();
-  }
+  validateOneArg(args);
   const pathToFile = args[0];
-  const newPathToFile = path.isAbsolute(pathToFile)
-    ? pathToFile
-    : path.resolve(currentDir, pathToFile);
+  const newPathToFile = getCorrectPath(currentDir, pathToFile);
 
   const hash = createHash("sha256");
   const readableStream = createReadStream(newPathToFile);

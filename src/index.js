@@ -94,7 +94,6 @@ reader.on("line", async (input) => {
     if (error instanceof InvalidInputError) {
       logMsg(error.message, "error");
     } else {
-      console.log(error);
       logMsg("Operation failed", "error");
     }
   }

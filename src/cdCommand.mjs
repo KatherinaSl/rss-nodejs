@@ -1,15 +1,11 @@
-import path from "node:path";
 import { stat } from "node:fs/promises";
 import { InvalidInputError } from "./utils/commandUtils.mjs";
+import { validateOneArg, getCorrectPath } from "./utils/common.mjs";
 
 const cdCommand = async (args, currentDir) => {
-  if (args.length !== 1 || !args[0]) {
-    throw new InvalidInputError();
-  }
+  validateOneArg(args);
   const pathToDirectory = args[0];
-  const newPath = path.isAbsolute(pathToDirectory)
-    ? pathToDirectory
-    : path.resolve(currentDir, pathToDirectory);
+  const newPath = getCorrectPath(currentDir, pathToDirectory);
 
   const file = await stat(newPath);
   if (file.isDirectory()) return newPath;
